@@ -16,3 +16,8 @@ export const getPost = async (id: number) => {
   console.log("상세 포스트 : ", response);
   return response;
 };
+
+export const postLike = async (id: number) => {
+  const response = await baseAxios.post(`/api/like`, { id });
+  return response;
+};
