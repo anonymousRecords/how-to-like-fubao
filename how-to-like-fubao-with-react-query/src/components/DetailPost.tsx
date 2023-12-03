@@ -1,10 +1,26 @@
+import { useMutation, useQueryClient } from "react-query";
+import { useParams } from "react-router-dom";
 import { PostData } from "../data/type";
+import { postLike } from "../api/PostController";
 
 interface PostProps {
   postData: PostData;
 }
 
 export default function DetailPost({ postData }: PostProps) {
+  const queryClient = useQueryClient();
+  const { id } = useParams();
+  const { mutate } = useMutation({
+    mutationFn: postLike,
+  });
+
+  const handleLikeClick = () => {
+    mutate(Number(id), {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["post", id]);
+      },
+    });
+  };
   return (
     <article
       style={{
@@ -36,6 +52,7 @@ export default function DetailPost({ postData }: PostProps) {
           src={
             postData.isLiked ? "/assets/heart-fill.svg" : "/assets/heart.svg"
           }
+          onClick={handleLikeClick}
         />
         <p>{postData.likeCount}명이 푸바오를 사랑합니다</p>
       </section>
